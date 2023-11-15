@@ -20,12 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         }
     };
     Image.init({
-        url: DataTypes.BLOB,       
-        
+        url: DataTypes.BLOB,
+
 
     }, {
         sequelize,
-        modelName: 'image',
+        modelName: 'Image',
         underscored: true,
     });
     return Image;

@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       Product.belongsToMany(models.Category, {
-        through: 'mapCategory'        
+        through: 'mapCategory'
       })
 
       Product.hasMany(models.Order, {
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     prodName: DataTypes.STRING,
     prodQuantity: DataTypes.INTEGER,
     prodDesc: DataTypes.TEXT,
-    prodAskPrice: DataTypes.DECIMAL(10,2),
+    prodAskPrice: DataTypes.DECIMAL(10, 2),
     prodPhone: DataTypes.STRING,
 
   }, {

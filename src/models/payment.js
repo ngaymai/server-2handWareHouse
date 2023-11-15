@@ -20,14 +20,16 @@ module.exports = (sequelize, DataTypes) => {
             })
 
             Payment.belongsToMany(models.User, {
-                sourceKey: 'id',
-                foreignKey: 'senderId',
+                through: 'Sender',
+                // sourceKey: 'id',
+                // foreignKey: 'senderId',
                 as: 'sender'
             })
 
             Payment.belongsToMany(models.User, {
-                sourceKey: 'id',
-                foreignKey: 'receiverId',
+                // sourceKey: 'id',
+                // foreignKey: 'receiverId',
+                through: 'Receiver',
                 as: 'receiver'
             })
 

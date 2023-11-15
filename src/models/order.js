@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'product'
       })
 
-      Order.hasOne(models.Place, {
+      Order.hasOne(models.ReceivePlace, {
         sourceKey: 'id',
         foreignKey: 'orderId',
         as: 'place'
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     userProposedPrice: DataTypes.DECIMAL(10,2),
     purQuantity: DataTypes.INTEGER,
     purShippingFee: DataTypes.DECIMAL(10,2),
-    status: DataTypes.string,   
+    status: DataTypes.STRING,   
 
   }, {
     sequelize,
