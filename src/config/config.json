@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "2handwarehouse",
-    "host": "127.0.0.1",
+    "username": "uylrtcg8gtr3lk0l",
+    "password": "ZC6HGeaQU3jpmL9BsBbb",
+    "database": "bouqa5foi1fh2meaxnzq",
+    "host": "bouqa5foi1fh2meaxnzq-mysql.services.clever-cloud.com",
     "dialect": "mysql",
     "logging": false,
     "raw": true,
