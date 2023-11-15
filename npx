@@ -1,0 +1,23 @@
+
+[4mSequelize CLI [Node: 14.17.0, CLI: 6.2.0, ORM: 6.6.2][24m
+
+Loaded configuration file "src\config\config.json".
+Using environment "development".
+== migration-ceate-order: migrating =======
+== migration-ceate-order: migrated (0.046s)
+
+== migration-create-category: migrating =======
+== migration-create-category: migrated (0.026s)
+
+== migration-create-image: migrating =======
+== migration-create-image: migrated (0.034s)
+
+== migration-create-payment: migrating =======
+== migration-create-payment: migrated (0.051s)
+
+== migration-create-receivePlace: migrating =======
+== migration-create-receivePlace: migrated (0.048s)
+
+== migration-create-ship: migrating =======
+
+
