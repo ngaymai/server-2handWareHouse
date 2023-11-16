@@ -1,3 +1,4 @@
+import itemService from "../services/itemService";
 
 let handleGetItems = async (req, res) => {
     let id = req.query.id; // all - for list of all iteams, id - for 1 item id
