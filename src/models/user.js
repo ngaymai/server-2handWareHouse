@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Ship, {
         sourceKey: 'id',
         foreignKey: 'userId',
-        as: 'orders',
+        as: 'ships',
       })
       // User.belongsToMany(models.Payment, {
       //   through: 'Receiver'

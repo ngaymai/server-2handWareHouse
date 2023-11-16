@@ -13,8 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Image.belongsTo(models.Product, {
         foreignKey: 'productId',
-        targetKey: 'id',
-        as: 'product'
+        targetKey: 'id',        
       })
 
     }

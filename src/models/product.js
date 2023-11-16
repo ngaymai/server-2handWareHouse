@@ -14,19 +14,19 @@ module.exports = (sequelize, DataTypes) => {
       Product.belongsTo(models.User, {
         foreignKey: 'userId',
         targetKey: 'id',
-        as: 'user'
+        
       })
 
       Product.hasOne(models.ShopLocation, {
         sourceKey: 'id',
         foreignKey: 'productId',
-        as: 'location'
+        
       })
 
       Product.hasMany(models.Image, {
         sourceKey: 'id',
         foreignKey: 'productId',
-        as: 'image'
+        
       })
 
       Product.belongsToMany(models.Category, {
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       Product.hasMany(models.Order, {
         sourceKey: 'id',
         foreignKey: 'productId',
-        as: 'order'
+        
       })
 
 

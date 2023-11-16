@@ -20,13 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       Ship.belongsTo(models.Payment, {
         sourceKey: 'id',
         foreignKey: 'paymentId',
-        as: 'payment'
+     
       })
 
       Ship.belongsTo(models.Order, {
         sourceKey: 'id',
         foreignKey: 'orderId',
-        as: 'order'
+       
       })
 
 

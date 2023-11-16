@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Payment.hasOne(models.Ship, {
         sourceKey: 'id',
         foreignKey: 'paymentId',
-        as: 'ship'
+        
       })
 
       // Payment.belongsToMany(models.User, {
