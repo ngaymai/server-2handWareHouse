@@ -7,6 +7,7 @@ let getItems = (iID) => {
             if (iID === 'all') {
                 console.log('Requesting all items');
                 items = await db.Product.findAll({
+                    include: User
                     // raw: true,
                 })
                 console.log(items);
@@ -15,6 +16,7 @@ let getItems = (iID) => {
                 console.log('Requesting specific items');
                 items = await db.Product.findOne({
                     where: { id: iID },
+                    include: User,
                     // raw: true,
                 })
 

@@ -51,8 +51,7 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'Product',
-    underscored: true,
+    modelName: 'Product',    
   });
   return Product;
 };
