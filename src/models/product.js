@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'user'
       })
 
-      Product.hasOne(models.Location, {
+      Product.hasOne(models.ShopLocation, {
         sourceKey: 'id',
         foreignKey: 'productId',
         as: 'location'

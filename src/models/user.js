@@ -21,18 +21,24 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'orders',
       })
-      User.belongsToMany(models.Payment, {
-        through: 'Receiver'
-        // sourceKey: 'id',
-        // foreignKey: 'receiverId',
-        // as: 'receivers',
+
+      User.hasMany(models.Ship, {
+        sourceKey: 'id',
+        foreignKey: 'userId',
+        as: 'orders',
       })
-      User.belongsToMany(models.Payment, {
-        through: 'Sender'
-        // sourceKey: 'id',
-        // foreignKey: 'senderId',
-        // as: 'senders',
-      })
+      // User.belongsToMany(models.Payment, {
+      //   through: 'Receiver'
+      //   // sourceKey: 'id',
+      //   // foreignKey: 'receiverId',
+      //   // as: 'receivers',
+      // })
+      // User.belongsToMany(models.Payment, {
+      //   through: 'Sender'
+      //   // sourceKey: 'id',
+      //   // foreignKey: 'senderId',
+      //   // as: 'senders',
+      // })
     }
   };
   User.init({

@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'product'
       })
 
-      Order.hasOne(models.ReceivePlace, {
+      Order.hasOne(models.ReceivingPlace, {
         sourceKey: 'id',
         foreignKey: 'orderId',
         as: 'place'
@@ -35,15 +35,15 @@ module.exports = (sequelize, DataTypes) => {
         as: 'ship'
       })
 
-      
+
 
     }
   };
   Order.init({
-    userProposedPrice: DataTypes.DECIMAL(10,2),
+    userProposedPrice: DataTypes.DECIMAL(10, 2),
     purQuantity: DataTypes.INTEGER,
-    purShippingFee: DataTypes.DECIMAL(10,2),
-    status: DataTypes.STRING,   
+    purShippingFee: DataTypes.DECIMAL(10, 2),
+    status: DataTypes.STRING,
 
   }, {
     sequelize,
