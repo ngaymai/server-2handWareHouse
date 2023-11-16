@@ -84,11 +84,27 @@ let handleEditUser = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handleRegister = async (req, res) => {
+    let data = req.body
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+        })
+    }
+
+    let message = await userService.insertUserData(data);
+
+    return res.status(200).json(message);
+    
+}
+
 module.exports = {
     handleLogin: handleLogin,
     handleGetAllUsers: handleGetAllUsers,
     handleCreateNewUser: handleCreateNewUser,
     handleDeleteUser: handleDeleteUser,
     handleEditUser: handleEditUser,
+    handleRegister: handleRegister,
 
 }
