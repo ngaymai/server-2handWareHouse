@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      prodNameuserProposedPrice: {
+      userProposedPrice: {
         type: Sequelize.DECIMAL(10, 2)
       },
       purQuantity: {

@@ -14,25 +14,25 @@ module.exports = (sequelize, DataTypes) => {
       Order.belongsTo(models.User, {
         foreignKey: 'userId',
         targetKey: 'id',
-        
+
       })
 
       Order.belongsTo(models.Product, {
         sourceKey: 'id',
         foreignKey: 'productId',
-        
+
       })
 
       Order.hasOne(models.ReceivingPlace, {
         sourceKey: 'id',
         foreignKey: 'orderId',
-        
+
       })
 
       Order.hasOne(models.Ship, {
         sourceKey: 'id',
         foreignKey: 'orderId',
-        
+
       })
 
 

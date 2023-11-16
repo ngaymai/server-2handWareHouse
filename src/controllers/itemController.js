@@ -1,8 +1,8 @@
 import itemService from "../services/itemService";
 
 let handleGetItems = async (req, res) => {
-    let id = 'all'  //req.query.id; // all - for list of all iteams, id - for 1 item id
-    console.log('Item ID:',id);
+    let id = req.query.id; // all - for list of all iteams, id - for 1 item id
+    
     if (!id) {
         return res.status(500).json({
             errCode: 1,
@@ -41,7 +41,24 @@ let handleGetOrders = async (req, res) => {
 }
 
 
+let handleAddItem = async (req, res) => {
+    let data = req.body; // all, id
+
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+            users: []
+        })
+    }
+
+    let message = await userService.createNewItem(data);
+
+    return res.status(200).json(message);
+}
+
 module.exports = {
     handleGetItems: handleGetItems,
-    handleGetOrders:handleGetOrders
+    handleGetOrders:handleGetOrders,
+    handleAddItem: handleAddItem,
 }
