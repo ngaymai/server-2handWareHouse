@@ -159,6 +159,7 @@ let insertUserData = (data) => {
             let hashPasswordFromBcrypt = await hashUserPassword(data.password);
             await db.User.create({
                 email: data.email,
+                username: data.username,
                 password: hashPasswordFromBcrypt,
                 firstName: data.firstName,
                 lastName: data.lastName,
