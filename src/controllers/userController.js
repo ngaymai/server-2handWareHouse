@@ -109,7 +109,7 @@ let handleGetItems = async (req, res) => {
         return res.status(500).json({
             errCode: 1,
             errMessage: 'Missing parameter value',
-            users: []
+            items: []
         })
     }
 
