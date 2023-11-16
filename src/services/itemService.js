@@ -8,6 +8,7 @@ let getItems = (iID) => {
                 items = await db.Product.findAll({
                     raw: true,
                 })
+                console.log(items);
 
             } else if (iID) {
                 items = await db.Product.findOne({
@@ -23,6 +24,30 @@ let getItems = (iID) => {
     })
 }
 
+let createNewItem = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {                       
+            await db.Order.create({
+                email: data.email,
+                password: hashPasswordFromBcrypt,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                address: data.address,
+                phoneNumber: data.phoneNumber,
+                gender: data.gender === '1' ? true : false,
+                roleId: data.roleId
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
-    getItems: getItems
+    getItems: getItems,
+    createNewItem, createNewItem,
 }
