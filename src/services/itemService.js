@@ -5,12 +5,14 @@ let getItems = (iID) => {
         try {
             let items = '';
             if (iID === 'all') {
+                console.log('Requesting all items');
                 items = await db.Product.findAll({
                     raw: true,
                 })
                 console.log(items);
 
             } else if (iID) {
+                console.log('Requesting specific items');
                 items = await db.Product.findOne({
                     where: { id: iID },
                     raw: true,
