@@ -7,7 +7,7 @@ let getItems = (iID) => {
             if (iID === 'all') {
                 console.log('Requesting all items');
                 items = await db.Product.findAll({
-                    raw: true,
+                    // raw: true,
                 })
                 console.log(items);
 
@@ -15,7 +15,7 @@ let getItems = (iID) => {
                 console.log('Requesting specific items');
                 items = await db.Product.findOne({
                     where: { id: iID },
-                    raw: true,
+                    // raw: true,
                 })
 
             }
@@ -54,7 +54,7 @@ let getAllOrders = (orderId) => {
 
 let createNewItem = (data) => {
     return new Promise(async (resolve, reject) => {
-        try {                       
+        try {
             await db.Order.create({
                 email: data.email,
                 password: hashPasswordFromBcrypt,
