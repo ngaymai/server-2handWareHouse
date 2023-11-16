@@ -31,6 +31,7 @@ let getItems = (iID) => {
             }
             resolve(items)
         } catch (e) {
+            console.log('error=======================')
             reject(e)
         }
     })
