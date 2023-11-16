@@ -99,6 +99,30 @@ let handleRegister = async (req, res) => {
     
 }
 
+
+
+
+let handleGetItems = async (req, res) => {
+    let id = req.query.id; // all - for list of all iteams, id - for 1 item id
+
+    if (!id) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+            users: []
+        })
+    }
+
+    let items = await userService.getItems(id);
+
+    return res.status(200).json({
+        errCode: 0,
+        errMessage: 'OK',
+        items
+    })
+}
+
+
 module.exports = {
     handleLogin: handleLogin,
     handleGetAllUsers: handleGetAllUsers,
@@ -106,5 +130,5 @@ module.exports = {
     handleDeleteUser: handleDeleteUser,
     handleEditUser: handleEditUser,
     handleRegister: handleRegister,
-
+    handleGetItems: handleGetItems
 }
