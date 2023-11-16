@@ -2,7 +2,7 @@ import itemService from "../services/itemService";
 
 let handleGetItems = async (req, res) => {
     let id = req.query.id; // all - for list of all iteams, id - for 1 item id
-
+    console.log('Item ID:',id);
     if (!id) {
         return res.status(500).json({
             errCode: 1,
