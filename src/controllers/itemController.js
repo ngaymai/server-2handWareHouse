@@ -12,7 +12,7 @@ let handleGetItems = async (req, res) => {
     }
 
     let items = await itemService.getItems(id);
-
+    console.log('Queried:', items);
     return res.status(200).json({
         errCode: 0,
         errMessage: 'OK',
