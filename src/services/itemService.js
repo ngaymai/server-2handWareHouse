@@ -25,6 +25,33 @@ let getItems = (iID) => {
     })
 }
 
+
+let getAllOrders = (orderId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let orders = '';
+            if (orderId === 'all') {
+                console.log('DB fetching all orders');
+                orders = await db.Order.findAll({
+                    raw: true,
+                })
+
+            } else if (orderId) {
+                console.log('DB fetching specific order');
+                orders = await db.Order.findOne({
+                    where: { id: orderId },
+                    raw: true,
+                })
+
+            }
+            resolve(orders)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
-    getItems: getItems
+    getItems: getItems,
+    getAllOrders: getAllOrders
 }
