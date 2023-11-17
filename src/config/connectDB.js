@@ -21,9 +21,9 @@ const sequelize = new Sequelize(
                     }
                 } : {}
         ,
-        query: {
-            "raw": true
-        },
+        // query: {
+        //     "raw": true
+        // },
         timezone: "+07:00"
     });
 

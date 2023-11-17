@@ -23,6 +23,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-item', itemController.handleGetItems);
     router.get('/api/get-order', itemController.handleGetOrders);
     router.post('/api/add-new-item', itemController.handleAddItem);
+    router.put('/api/update-item', itemController.handleUpdateItem);
+    router.delete('/api/delete-item', itemController.handleDeleteItem)
     return app.use("/", router);
 }
 

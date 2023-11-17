@@ -9,10 +9,27 @@ let getItems = (iID) => {
                 items = await db.Product.findAll({
                     include: [
                         {
-                            model: models.User
-                        }
-                    ]
-                    // raw: true,
+                            model: db.User,
+                            as: 'user'
+                        },
+                        {
+                            model: db.Image,
+                            as: 'images'
+                        },
+                        {
+                            model: db.ShopLocation,
+                            as: 'location'
+                        },
+                        {
+                            model: db.Category,
+                            as: 'categories'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'orders'
+                        }],
+                    nest: true,
+                    raw: false,
                 })
                 console.log(items);
 
@@ -22,16 +39,34 @@ let getItems = (iID) => {
                     where: { id: iID },
                     include: [
                         {
-                            model: models.User
+                            model: db.User,
+                            as: 'user'
+                        },
+                        {
+                            model: db.Image,
+                            as: 'images'
+                        },
+                        {
+                            model: db.ShopLocation,
+                            as: 'location'
+                        },
+                        {
+                            model: db.Category,
+                            as: 'categories'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'orders'
                         }
-                    ]
-                    // raw: true,
+                    ],
+                    raw: false,
+                    nest: true
                 })
 
             }
             resolve(items)
         } catch (e) {
-            console.log('error=======================')
+
             reject(e)
         }
     })
@@ -45,14 +80,19 @@ let getAllOrders = (orderId) => {
             if (orderId === 'all') {
                 console.log('DB fetching all orders');
                 orders = await db.Order.findAll({
-                    raw: true,
+                    include: [db.User, db.Product],
+                    raw: false,
+                    nest: true
                 })
+                console.log("end test")
 
             } else if (orderId) {
                 console.log('DB fetching specific order');
                 orders = await db.Order.findOne({
                     where: { id: orderId },
-                    raw: true,
+                    include: [db.User, db.Product],
+                    raw: false,
+                    nest: true
                 })
 
             }
@@ -66,15 +106,79 @@ let getAllOrders = (orderId) => {
 let createNewItem = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await db.Order.create({
-                email: data.email,
-                password: hashPasswordFromBcrypt,
-                firstName: data.firstName,
-                lastName: data.lastName,
+            let product = await db.Product.create({
+                prodName: data.productName,
+                prodQuantity: data.productQuantity,
+                prodDesc: data.productDescription,
+                prodAskPrice: data.productAskPrice,
+                prodPhone: data.productPhone,
+                userId: data.userId,
+
+            })
+            // console.log(product)
+            if (data.image) {
+                let urls = data.image
+                console.log(urls)
+                urls.forEach(async (url) => {
+                    await createImage(url, product.id)
+                });
+            };
+
+            if (data.location) {
+                console.log(data.location)
+                let temp = async (data, id) => await createShopLocation(data, id);
+
+                temp(data.location, product.id);
+
+            }
+
+            if (data.category) {
+                let categories = data.category
+                console.log(categories)
+                categories.forEach(async (categ) => {
+                    await mapCategory(categ, product.id)
+                });
+            }
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let createShopLocation = (data, id) => {
+    console.log('create shop')
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.ShopLocation.create({
+                country: data.country,
+                province: data.province,
+                city: data.city,
                 address: data.address,
-                phoneNumber: data.phoneNumber,
-                gender: data.gender === '1' ? true : false,
-                roleId: data.roleId
+                productId: id,
+            })
+            console.log('insert location ok');
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let mapCategory = (category, id) => {
+    console.log(category, id)
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.MapCategory.create({
+                categoryId: category,
+                productId: id,
             })
             resolve({
                 errCode: 0,
@@ -86,8 +190,97 @@ let createNewItem = (data) => {
     })
 }
 
+let createImage = (url, id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.Image.create({
+                url: url,
+                productId: id,
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let updateItemData = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let product = await db.Product.findOne({
+                where: {
+                    id: data.id,
+                },
+                raw: false,
+            });
+            if (product) {
+                product.prodName = data.productName;
+                product.prodQuantity = data.productQuantity;
+                product.prodDesc = data.productDescription;
+                product.prodAskPrice = data.productAskPrice;
+                product.prodPhone = data.productPhone;
+                await product.save();
+
+                resolve({
+                    errCode: 0,
+                    errMessage: `Update success`
+                });
+            } else {
+                resolve({
+                    errCode: 2,
+                    errMessage: `Product isn't exist. `
+                });
+            }
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let deleteItemById = (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let res = await db.Product.findOne({
+                where: {
+                    id: productId,
+                },
+                include: [
+                    db.Image, db.ShopLocation
+                ]
+            });
+            if (res) {
+                let res2 = await db.Order.findAll({
+                    where: {
+                        productId: productId
+                    }
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Delete success',
+                    product: res,
+                    order: res2
+                });
+            } else {
+                resolve({
+                    errCode: 2,
+                    errMessage: `Product isn't exist`
+                });
+            }
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     getItems: getItems,
     getAllOrders: getAllOrders,
-    createNewItem, createNewItem,
+    createNewItem: createNewItem,
+    updateItemData: updateItemData,
+    deleteItemById: deleteItemById
 }

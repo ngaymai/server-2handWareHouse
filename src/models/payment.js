@@ -11,25 +11,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Payment.hasOne(models.Ship, {
-        sourceKey: 'id',
-        foreignKey: 'paymentId',
-        
+
+
+      Payment.belongsTo(models.User, {
+        as: 'sender'
       })
 
-      // Payment.belongsToMany(models.User, {
-      //   through: 'Sender',
-      //   // sourceKey: 'id',
-      //   // foreignKey: 'senderId',
-      //   as: 'sender'
-      // })
+      Payment.belongsTo(models.User, {
+        as: 'receiver'
+      })
 
-      // Payment.belongsToMany(models.User, {
-      //   // sourceKey: 'id',
-      //   // foreignKey: 'receiverId',
-      //   through: 'Receiver',
-      //   as: 'receiver'
-      // })
+      Payment.belongsTo(models.Order, {
+        as: 'order'
+      })
 
     }
   };
@@ -40,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Payment',
+    tableName: 'Payments'
   });
   return Payment;
 };

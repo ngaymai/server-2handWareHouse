@@ -9,29 +9,42 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       payAmount: {
-        type: Sequelize.DECIMAL(10, 2)
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
       },
       payMethod: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       transactionId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+
+      orderId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Orders',
+          key: 'id',
+        },
       },
 
       senderId: {
         type: Sequelize.INTEGER,
-        // references: {
-        //   model: 'Users',
-        //   key: 'id',
-        // },
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
       },
       receiverId: {
         type: Sequelize.INTEGER,
-
-        // references: {
-        //   model: 'Users',
-        //   key: 'id',
-        // },
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,

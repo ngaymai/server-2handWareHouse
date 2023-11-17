@@ -12,17 +12,27 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2)
       },
       purQuantity: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       purShippingFee: {
-        type: Sequelize.DECIMAL(10, 2)
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
       },
       status: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       userId: {
         type: Sequelize.INTEGER,
-
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+      },
+      shipperId: {
+        type: Sequelize.INTEGER,        
         references: {
           model: 'Users',
           key: 'id',
@@ -30,7 +40,7 @@ module.exports = {
       },
       productId: {
         type: Sequelize.INTEGER,
-
+        allowNull: false,
         references: {
           model: 'Products',
           key: 'id',

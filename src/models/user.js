@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.Product, {
+      User.hasMany(sequelize.define('Product'), {
         sourceKey: 'id',
         foreignKey: 'userId',
         as: 'products'
@@ -19,26 +19,24 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Order, {
         sourceKey: 'id',
         foreignKey: 'userId',
-        as: 'orders',
+        as: 'orders'
       })
 
-      User.hasMany(models.Ship, {
+      User.hasMany(models.Order, {
         sourceKey: 'id',
-        foreignKey: 'userId',
+        foreignKey: 'shipperId',
         as: 'ships',
       })
-      // User.belongsToMany(models.Payment, {
-      //   through: 'Receiver'
-      //   // sourceKey: 'id',
-      //   // foreignKey: 'receiverId',
-      //   // as: 'receivers',
-      // })
-      // User.belongsToMany(models.Payment, {
-      //   through: 'Sender'
-      //   // sourceKey: 'id',
-      //   // foreignKey: 'senderId',
-      //   // as: 'senders',
-      // })
+      User.hasMany(models.Payment, {
+        sourceKey: 'id',
+        foreignKey: 'receiverId',
+        as: 'payReceivings',
+      })
+      User.hasMany(models.Payment, {      
+        sourceKey: 'id',
+        foreignKey: 'senderId',
+        as: 'paySendings',
+      })
     }
   };
   User.init({
@@ -57,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    tableName: 'Users'
   });
   return User;
 };

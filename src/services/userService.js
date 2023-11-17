@@ -1,6 +1,6 @@
 import db from "../models"
 import bcrypt from 'bcryptjs'
-
+const { QueryTypes } = require('sequelize');
 const salt = bcrypt.genSaltSync(10);
 
 let hashUserPassword = (password) => {
@@ -68,23 +68,70 @@ let getAllUsers = (userId) => {
             let users = '';
             if (userId === 'all') {
                 users = await db.User.findAll({
-                    // attributes: ['email', 'roleId', 'password'],
-                    // where: { id: userId },
+
                     attributes: {
                         exclude: ['password'],
                     },
-                    raw: true,
-                })
 
+                    include: [
+                        {
+                            model: db.Product,
+                            as: 'products'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'orders'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'ships'
+                        },
+                        {
+                            model: db.Payment,
+                            as: 'payReceivings'
+                        },
+                        {
+                            model: db.Payment,
+                            as: 'paySendings'
+                        },
+                    ],
+
+                    raw: false,
+                    nest: true
+                })
+                // console.log(users)
 
             } else if (userId) {
-                users = await db.User.findOne({
+                let users = await db.User.findOne({
                     // attributes: ['email', 'roleId', 'password'],
                     attributes: {
                         exclude: ['password'],
                     },
+                    include: [
+                        {
+                            model: db.Product,
+                            as: 'products'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'orders'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'ships'
+                        },
+                        {
+                            model: db.Payment,
+                            as: 'payReceivings'
+                        },
+                        {
+                            model: db.Payment,
+                            as: 'paySendings'
+                        },
+                    ],
                     where: { id: userId },
-                    raw: true,
+                    raw: false,
+                    nest: true,
                 })
 
             }
@@ -135,7 +182,8 @@ let createNewUser = async (data) => {
                 phoneNumber: data.phoneNumber,
                 gender: data.gender === '1' ? true : false,
                 roleId: data.roleId
-            })
+            }
+            )
             resolve({
                 errCode: 0,
                 errMessage: 'OK'
@@ -167,7 +215,8 @@ let insertUserData = (data) => {
                 phoneNumber: data.phoneNumber,
                 image: data.image,
                 // gender: data.gender === '1' ? true : false,
-                roleId: data.roleId
+                roleId: data.roleId,
+                // Products: [{}]
             })
             resolve({
                 errCode: 0,
@@ -247,7 +296,8 @@ let getUserInforById = (userId) => {
                 where: {
                     id: userId,
                 },
-                raw: true
+                include: [db.Product],
+                raw: false
             });
             if (user) {
                 resolve(user);

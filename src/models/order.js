@@ -12,31 +12,27 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Order.belongsTo(models.User, {
-        foreignKey: 'userId',
-        targetKey: 'id',
-
+        as: 'user'
+      })
+      
+      Order.belongsTo(models.Product, {
+        as: 'product'
       })
 
-      Order.belongsTo(models.Product, {
-        sourceKey: 'id',
-        foreignKey: 'productId',
-
+      Order.belongsTo(models.User,{
+        as: 'shipper'
       })
 
       Order.hasOne(models.ReceivingPlace, {
         sourceKey: 'id',
         foreignKey: 'orderId',
-
+        as: 'receivingPlace'
       })
 
-      Order.hasOne(models.Ship, {
-        sourceKey: 'id',
+      Order.hasOne(models.Payment, {        
         foreignKey: 'orderId',
-
+        as: 'payment'
       })
-
-
-
     }
   };
   Order.init({
@@ -48,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Order',
-    underscored: true,
+    tableName: 'Orders',
   });
   return Order;
 };

@@ -48,17 +48,47 @@ let handleAddItem = async (req, res) => {
         return res.status(500).json({
             errCode: 1,
             errMessage: 'Missing parameter value',
-            users: []
         })
     }
 
-    let message = await userService.createNewItem(data);
+    let message = await itemService.createNewItem(data);
 
     return res.status(200).json(message);
 }
 
+let handleUpdateItem = async (req, res) => {
+    let data = req.body;
+
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+        })
+    }
+
+    let message = await itemService.updateItemData(data);
+
+    return res.status(200).json(message);
+}
+
+let handleDeleteItem = async (req, res) => {
+    let id = req.body.id; // all, id
+    
+    if (!id) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value'
+        })
+    }
+
+    let message = await itemService.deleteItemById(id);
+
+    return res.status(200).json(message);
+}
 module.exports = {
     handleGetItems: handleGetItems,
-    handleGetOrders:handleGetOrders,
+    handleGetOrders: handleGetOrders,
     handleAddItem: handleAddItem,
+    handleUpdateItem: handleUpdateItem,
+    handleDeleteItem: handleDeleteItem
 }

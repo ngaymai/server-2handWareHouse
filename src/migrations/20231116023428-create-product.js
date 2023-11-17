@@ -9,10 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       prodName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       prodQuantity: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       prodDesc: {
         type: Sequelize.TEXT
@@ -21,10 +23,12 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2)
       },
       prodPhone: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       userId: {
-        type: Sequelize.INTEGER,        
+        type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Users',
           key: 'id',

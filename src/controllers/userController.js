@@ -96,7 +96,7 @@ let handleRegister = async (req, res) => {
     let message = await userService.insertUserData(data);
 
     return res.status(200).json(message);
-    
+
 }
 
 

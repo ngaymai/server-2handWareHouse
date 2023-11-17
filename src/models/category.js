@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Category.belongsToMany(models.Product, {
-        through: 'mapCategory'
+        through: 'MapCategory',
+        foreignKey: 'productId',
+        as: 'products'
       })
     }
   };
@@ -21,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Category',
+    tableName: 'Categories'
   });
   return Category;
 };

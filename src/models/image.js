@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Image.belongsTo(models.Product, {
         foreignKey: 'productId',
-        targetKey: 'id',        
+        targetKey: 'id',
       })
 
     }
@@ -21,11 +21,12 @@ module.exports = (sequelize, DataTypes) => {
   Image.init({
     url: DataTypes.BLOB,
 
-
   }, {
     sequelize,
     modelName: 'Image',
-    underscored: true,
+    tableName: 'Images'
   });
+
+  Image.removeAttribute('id');
   return Image;
 };

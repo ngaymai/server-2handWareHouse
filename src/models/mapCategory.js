@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'MapCategory',
+    tableName: 'MapCategories'
   });
+
+  MapCategory.removeAttribute('id');
   return MapCategory;
 };
