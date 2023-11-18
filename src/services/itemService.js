@@ -30,6 +30,7 @@ let getItems = (iID) => {
                         }],
                     nest: true,
                     raw: false,
+                    // all: true,
                 })
                 console.log(items);
 
@@ -119,8 +120,8 @@ let createNewItem = (data) => {
             if (data.image) {
                 let urls = data.image
                 console.log(urls)
-                urls.forEach(async (url) => {
-                    await createImage(url, product.id)
+                urls.forEach(async (url, index) => {
+                    await createImage(url, product.id, index)
                 });
             };
 
@@ -135,8 +136,8 @@ let createNewItem = (data) => {
             if (data.category) {
                 let categories = data.category
                 console.log(categories)
-                categories.forEach(async (categ) => {
-                    await mapCategory(categ, product.id)
+                categories.forEach(async (categ, index) => {
+                    await mapCategory(categ, product.id, index)
                 });
             }
             resolve({
@@ -171,7 +172,7 @@ let createShopLocation = (data, id) => {
     })
 }
 
-let mapCategory = (category, id) => {
+let mapCategory = (category, id, index) => {
     console.log(category, id)
 
     return new Promise(async (resolve, reject) => {
@@ -179,6 +180,7 @@ let mapCategory = (category, id) => {
             await db.MapCategory.create({
                 categoryId: category,
                 productId: id,
+                index: index
             })
             resolve({
                 errCode: 0,
@@ -190,12 +192,13 @@ let mapCategory = (category, id) => {
     })
 }
 
-let createImage = (url, id) => {
+let createImage = (url, id, index) => {
     return new Promise(async (resolve, reject) => {
         try {
             await db.Image.create({
                 url: url,
                 productId: id,
+                index: index,
             })
             resolve({
                 errCode: 0,
@@ -222,8 +225,40 @@ let updateItemData = (data) => {
                 product.prodDesc = data.productDescription;
                 product.prodAskPrice = data.productAskPrice;
                 product.prodPhone = data.productPhone;
-                await product.save();
+                if (data.location) {
+                    console.log("update location")
+                    let location = await db.ShopLocation.update(
+                        {
+                            country: data.country,
+                            province: data.province,
+                            city: data.city,
+                            address: data.address
+                        },
+                        {
+                            where: {
+                                productId: product.id
+                            },
+                            raw: false
+                        }
 
+                    )
+                    // await location.save()
+                }
+
+                if (data.image) {
+                    console.log("update image")
+                    let urls = data.image
+                    urls.map(async (url, index) => await updateItemImage(url, product.id, index))
+                }
+
+                if (data.category) {
+                    console.log("update category")
+                    let categories = data.category
+                    categories.map(async (categ, index) => await updateItemCategory(categ, product.id, index))
+
+                }
+                console.log("update product")
+                await product.save();
                 resolve({
                     errCode: 0,
                     errMessage: `Update success`
@@ -241,35 +276,79 @@ let updateItemData = (data) => {
     })
 }
 
+let updateItemImage = (url, id, index) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let image = await db.Image.update(
+                {
+                    url: url
+                },
+                {
+                    where: {
+                        productId: id,
+                        index: index,
+                    },
+                    raw: false
+                })
+
+            // image.save()
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let updateItemCategory = (category, id, index) => {
+    console.log(category, id)
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let map = await db.MapCategory.update({
+                categoryId: category,
+            }, {
+                where: {
+                    productId: id,
+                    index: index
+                },
+                raw: false
+            })
+            // map.save()
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let deleteItemById = (productId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let res = await db.Product.findOne({
+            let res = await db.Product.destroy({
                 where: {
-                    id: productId,
-                },
-                include: [
-                    db.Image, db.ShopLocation
-                ]
-            });
+                    id: productId
+                }
+            })
+
             if (res) {
-                let res2 = await db.Order.findAll({
-                    where: {
-                        productId: productId
-                    }
-                })
                 resolve({
                     errCode: 0,
                     errMessage: 'Delete success',
-                    product: res,
-                    order: res2
-                });
+                })
             } else {
                 resolve({
                     errCode: 2,
-                    errMessage: `Product isn't exist`
-                });
+                    errMessage: `Product isn't exist`,
+                })
             }
+
+
 
         } catch (e) {
             reject(e)

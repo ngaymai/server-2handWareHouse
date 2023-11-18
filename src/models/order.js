@@ -12,26 +12,36 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Order.belongsTo(models.User, {
-        as: 'user'
+        as: 'user',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
       
       Order.belongsTo(models.Product, {
-        as: 'product'
+        as: 'product',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
 
       Order.belongsTo(models.User,{
-        as: 'shipper'
+        as: 'shipper',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
 
       Order.hasOne(models.ReceivingPlace, {
         sourceKey: 'id',
         foreignKey: 'orderId',
-        as: 'receivingPlace'
+        as: 'receivingPlace',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       })
 
       Order.hasOne(models.Payment, {        
         foreignKey: 'orderId',
-        as: 'payment'
+        as: 'payment',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       })
     }
   };

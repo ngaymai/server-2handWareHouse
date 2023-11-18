@@ -14,12 +14,15 @@ module.exports = (sequelize, DataTypes) => {
       Image.belongsTo(models.Product, {
         foreignKey: 'productId',
         targetKey: 'id',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
 
     }
   };
   Image.init({
     url: DataTypes.BLOB,
+    index: DataTypes.INTEGER
 
   }, {
     sequelize,
@@ -27,6 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Images'
   });
 
-  Image.removeAttribute('id');
+  // Image.removeAttribute('id');
   return Image;
 };

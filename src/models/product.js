@@ -11,30 +11,41 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Product.belongsTo(models.User, {        
-        as: 'user'
+      Product.belongsTo(models.User, {
+        as: 'user',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
 
-      Product.hasOne(models.ShopLocation, {        
+      Product.hasOne(models.ShopLocation, {
         foreignKey: 'productId',
-        as: 'location'
+        as: 'location',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       })
 
-      Product.hasMany(models.Image, {        
+      Product.hasMany(models.Image, {
+        sourceKey: 'id',
         foreignKey: 'productId',
-        as: 'images'
+        as: 'images',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       })
 
       Product.belongsToMany(models.Category, {
         through: 'MapCategory',
-        foreignKey: 'categoryId',
-        as: 'categories'
+        foreignKey: 'productId',
+        as: 'categories',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
 
       Product.hasMany(models.Order, {
         sourceKey: 'id',
         foreignKey: 'productId',
-        as: 'orders'
+        as: 'orders',
+        onDelete: 'SET NULL',        
+        onUpdate: 'CASCADE',
       })
     }
   };

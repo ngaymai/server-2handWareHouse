@@ -9,14 +9,21 @@ module.exports = {
           model: 'Categories',
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       productId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Products',
-          key: 'id',
+          key: 'id',         
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
+      index: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

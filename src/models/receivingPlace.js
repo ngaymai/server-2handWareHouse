@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Order, {        
-        as: 'order'
+        as: 'order',
+        // onDelete: 'CASCADE',
+        // onUpdate: 'CASCADE',
       })
     }
   };

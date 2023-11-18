@@ -14,28 +14,38 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(sequelize.define('Product'), {
         sourceKey: 'id',
         foreignKey: 'userId',
-        as: 'products'
+        as: 'products',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       })
       User.hasMany(models.Order, {
         sourceKey: 'id',
         foreignKey: 'userId',
-        as: 'orders'
+        as: 'orders',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
       })
 
       User.hasMany(models.Order, {
         sourceKey: 'id',
         foreignKey: 'shipperId',
         as: 'ships',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
       })
       User.hasMany(models.Payment, {
         sourceKey: 'id',
         foreignKey: 'receiverId',
         as: 'payReceivings',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
       })
-      User.hasMany(models.Payment, {      
+      User.hasMany(models.Payment, {
         sourceKey: 'id',
         foreignKey: 'senderId',
         as: 'paySendings',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
       })
     }
   };
