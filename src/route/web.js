@@ -26,6 +26,7 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-item', itemController.handleDeleteItem);
     router.post('/api/create-order', itemController.handleCreateOrder);
     router.get('/api/get-orders', itemController.handleGetOrders);
+    router.get('/api/get-sell-orders', itemController.handleGetSellOrders);
     return app.use("/", router);
 }
 

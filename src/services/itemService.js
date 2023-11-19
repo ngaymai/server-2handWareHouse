@@ -437,8 +437,8 @@ let getAllOrders = (uId) => {
                 fetchData()
                 .then (()=> addShop())
                 .then (()=>returnData())
-
-            } else if (uId) {
+            } 
+            else if (uId) {
                 console.log('DB fetching orders for a user');
                 
                 let fetchData = async () => {
@@ -501,11 +501,39 @@ let getAllOrders = (uId) => {
     })
 }
 
+let getSellOrders = (uid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let allOrders = await getAllOrders('all');
+            let ret = [];
+            if (allOrders.length > 0){
+                var filterOrdersLoop = new Promise((resolve, reject) => {
+                    allOrders.forEach(async (order, index) => {
+                        if (uid === order.dataValues.product.userId.toString()){
+                            ret.push(order);
+                        }
+                            
+                        if (index === allOrders.length -1) resolve();
+                    })
+                });
+                
+                filterOrdersLoop.then(() => {
+                    resolve(ret);
+                });
+            }
+            
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     getItems: getItems,
     createNewItem: createNewItem,
     updateItemData: updateItemData,
     deleteItemById: deleteItemById,
     createNewOrder: createNewOrder,
-    getAllOrders: getAllOrders
+    getAllOrders: getAllOrders,
+    getSellOrders: getSellOrders
 }
