@@ -11,10 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
     }
   };
   MapCategory.init({
-    
+    index: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'MapCategory',

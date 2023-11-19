@@ -28,23 +28,31 @@ module.exports = {
           model: 'Orders',
           key: 'id',
         },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
 
       senderId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
+
           model: 'Users',
           key: 'id',
         },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
       receiverId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
+
           model: 'Users',
           key: 'id',
         },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,

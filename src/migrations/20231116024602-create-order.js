@@ -30,13 +30,17 @@ module.exports = {
           model: 'Users',
           key: 'id',
         },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
       shipperId: {
-        type: Sequelize.INTEGER,        
+        type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           key: 'id',
         },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
       productId: {
         type: Sequelize.INTEGER,
@@ -45,6 +49,8 @@ module.exports = {
           model: 'Products',
           key: 'id',
         },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
