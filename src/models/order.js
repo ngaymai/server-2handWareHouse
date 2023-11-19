@@ -12,18 +12,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Order.belongsTo(models.User, {
-        as: 'user',
+        foreignKey: 'userId',
+        as: 'buyer',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
       })
-      
+
       Order.belongsTo(models.Product, {
+        foreignKey: 'productId',
         as: 'product',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
       })
 
-      Order.belongsTo(models.User,{
+      Order.belongsTo(models.User, {
+        foreignKey: 'shipperId',
         as: 'shipper',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
@@ -37,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
       })
 
-      Order.hasOne(models.Payment, {        
+      Order.hasOne(models.Payment, {
         foreignKey: 'orderId',
         as: 'payment',
         onDelete: 'SET NULL',

@@ -349,17 +349,20 @@ let createReceivePlace = (data, id) => {
 }
 
 let createNewOrder = (data) => {
+    console.log(data)
+    // console.log(data.buyerId)
     return new Promise(async (resolve, reject) => {
         try {
             let order = await db.Order.create({
                 userProposedPrice: data.proposedPrice,
                 purQuantity: data.quantity,
-                purShippingFee:data.shippingFee,
-                status:'waiting',
+                purShippingFee: data.shippingFee,
+                status: 'waiting',
                 userId: data.buyerId,
+                shipperId: data.shipperId,
                 productId: data.productId
             })
-            console.log("Inserted Order: ",order)
+            console.log("Inserted Order: ", order)
 
             if (data.receivePlace) {
                 // console.log('Got receive place: ',data.receivePlace)
@@ -384,23 +387,24 @@ let getAllOrders = (uId) => {
             let orders = null;
             if (uId === 'all') {
                 console.log('DB fetching all orders');
-                
+
                 let fetchData = async () => {
                     orders = await db.Order.findAll({
                         include: [
-                            {model:db.User, as: 'shipper'}, 
-                            {model:db.Product, as: 'product'},
-                            {model:db.ReceivingPlace, as: 'receivingPlace'}
+                            { model: db.User, as: 'shipper' },
+                            { model: db.User, as: 'buyer' },
+                            { model: db.Product, as: 'product' },
+                            { model: db.ReceivingPlace, as: 'receivingPlace' }
                         ],
                         raw: false,
                         nest: true
                     });
                     // console.log('--> fetched orders')
                 }
-                
+
                 let addShop = () => {
                     return new Promise(async (resolve, reject) => {
-                        if (orders.length != 0){
+                        if (orders.length != 0) {
                             let shopLoc = null;
                             var addShopsLoop = new Promise((resolve, reject) => {
                                 orders.forEach(async (order, index) => {
@@ -410,54 +414,54 @@ let getAllOrders = (uId) => {
                                         raw: false
                                     });
                                     // console.log("Found order's shop: ", shopLoc.dataValues);
-                                    if (shopLoc)    orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
-                                    else            orders[index].dataValues['shopLocation'] = null;
-                                    if (index === orders.length -1) resolve();
+                                    if (shopLoc) orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
+                                    else orders[index].dataValues['shopLocation'] = null;
+                                    if (index === orders.length - 1) resolve();
                                 })
                             });
-                            
+
                             addShopsLoop.then(() => {
                                 // console.log('All shops added!');
                                 resolve();
                             });
                         }
-                        else{
+                        else {
                             resolve();
                         }
                     })
                 }
-                
+
 
                 let returnData = () => {
                     // console.log('Final orders:\n', orders)
                     // console.log('--> returning data')
                     resolve(orders);
                 }
-                
+
                 fetchData()
-                .then (()=> addShop())
-                .then (()=>returnData())
-            } 
+                    .then(() => addShop())
+                    .then(() => returnData())
+            }
             else if (uId) {
                 console.log('DB fetching orders for a user');
-                
+
                 let fetchData = async () => {
                     orders = await db.Order.findAll({
                         where: { userId: uId },
                         include: [
-                            {model:db.User, as: 'shipper'}, 
-                            {model:db.Product, as: 'product'},
-                            {model:db.ReceivingPlace, as: 'receivingPlace'}
+                            { model: db.User, as: 'shipper' },
+                            { model: db.Product, as: 'product' },
+                            { model: db.ReceivingPlace, as: 'receivingPlace' }
                         ],
                         raw: false,
                         nest: true
                     });
                     // console.log('--> fetched orders')
                 }
-                
+
                 let addShop = () => {
                     return new Promise(async (resolve, reject) => {
-                        if (orders.length != 0){
+                        if (orders.length != 0) {
                             let shopLoc = null;
                             var addShopsLoop = new Promise((resolve, reject) => {
                                 orders.forEach(async (order, index) => {
@@ -467,33 +471,33 @@ let getAllOrders = (uId) => {
                                         raw: false
                                     });
                                     // console.log("Found order's shop: ", shopLoc.dataValues);
-                                    if (shopLoc)    orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
-                                    else            orders[index].dataValues['shopLocation'] = null;
-                                    if (index === orders.length -1) resolve();
+                                    if (shopLoc) orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
+                                    else orders[index].dataValues['shopLocation'] = null;
+                                    if (index === orders.length - 1) resolve();
                                 })
                             });
-                            
+
                             addShopsLoop.then(() => {
                                 // console.log('All shops added!');
                                 resolve();
                             });
                         }
-                        else{
+                        else {
                             resolve();
                         }
                     })
                 }
-                
+
 
                 let returnData = () => {
                     // console.log('Final orders:\n', orders)
                     // console.log('--> returning data')
                     resolve(orders);
                 }
-                
+
                 fetchData()
-                .then (()=> addShop())
-                .then (()=>returnData())
+                    .then(() => addShop())
+                    .then(() => returnData())
             }
         } catch (e) {
             reject(e)
@@ -506,22 +510,22 @@ let getSellOrders = (uid) => {
         try {
             let allOrders = await getAllOrders('all');
             let ret = [];
-            if (allOrders.length > 0){
+            if (allOrders.length > 0) {
                 var filterOrdersLoop = new Promise((resolve, reject) => {
                     allOrders.forEach(async (order, index) => {
-                        if (uid === order.dataValues.product.userId.toString()){
+                        if (uid === order.dataValues.product.userId.toString()) {
                             ret.push(order);
                         }
-                            
-                        if (index === allOrders.length -1) resolve();
+
+                        if (index === allOrders.length - 1) resolve();
                     })
                 });
-                
+
                 filterOrdersLoop.then(() => {
                     resolve(ret);
                 });
             }
-            
+
         } catch (e) {
             reject(e)
         }

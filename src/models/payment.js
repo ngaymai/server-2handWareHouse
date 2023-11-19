@@ -14,18 +14,21 @@ module.exports = (sequelize, DataTypes) => {
 
 
       Payment.belongsTo(models.User, {
+        foreignKey: 'senderId',
         as: 'sender',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
       })
 
       Payment.belongsTo(models.User, {
+        foreignKey: 'receiverId',
         as: 'receiver',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
       })
 
       Payment.belongsTo(models.Order, {
+        foreignKey: 'orderId',
         as: 'order',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
