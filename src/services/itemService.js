@@ -328,17 +328,16 @@ let deleteItemById = (productId) => {
 
 ///////////////////////////////////////////    ORDER    ///////////////////////////////////////////////////////////////////
 let createReceivePlace = (data, id) => {
-    console.log('create order receive place')
     return new Promise(async (resolve, reject) => {
         try {
-            await db.ReceivingPlace.create({
+            let place = await db.ReceivingPlace.create({
                 country: data.country,
                 province: data.province,
                 city: data.city,
                 address: data.address,
                 orderId: id,
             })
-            console.log('sucessfully added delivery location');
+            console.log('sucessfully added delivery location: ', place);
             resolve({
                 errCode: 0,
                 errMessage: 'OK'
@@ -363,7 +362,7 @@ let createNewOrder = (data) => {
             console.log("Inserted Order: ",order)
 
             if (data.receivePlace) {
-                console.log('Got receive place: ',data.receivePlace)
+                // console.log('Got receive place: ',data.receivePlace)
                 let insertReicevePlace = async (data, id) => await createReceivePlace(data, id);
 
                 insertReicevePlace(data.receivePlace, order.id);
@@ -379,36 +378,83 @@ let createNewOrder = (data) => {
     })
 }
 
-let getAllOrders = (orderId) => {
+let getAllOrders = (uId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let orders = '';
-            if (orderId === 'all') {
+            let orders = null;
+            if (uId === 'all') {
                 console.log('DB fetching all orders');
                 orders = await db.Order.findAll({
                     include: [
                         {model:db.User, as: 'shipper'}, 
-                        {model:db.Product, as: 'product'}
+                        {model:db.Product, as: 'product'},
+                        {model:db.ReceivingPlace, as: 'receivingPlace'}
                     ],
                     raw: false,
                     nest: true
                 })
                 console.log("end test")
+                resolve(orders)
 
-            } else if (orderId) {
-                console.log('DB fetching specific order');
-                orders = await db.Order.findOne({
-                    where: { id: orderId },
-                    include: [
-                        {model:db.User, as: 'shipper'}, 
-                        {model:db.Product, as: 'product'}
-                    ],
-                    raw: false,
-                    nest: true
-                })
+            } else if (uId) {
+                console.log('DB fetching orders for a user');
+                let shopLoc = null;
+                
+                let fetchData = async () => {
+                    orders = await db.Order.findAll({
+                        where: { userId: uId },
+                        include: [
+                            {model:db.User, as: 'shipper'}, 
+                            {model:db.Product, as: 'product'},
+                            {model:db.ReceivingPlace, as: 'receivingPlace'}
+                        ],
+                        raw: false,
+                        nest: true
+                    });
+                    // console.log('--> fetched orders')
+                }
+                
+                let addShop = () => {
+                    return new Promise(async (resolve, reject) => {
+                        if (orders.length != 0){
+                            var addShopsLoop = new Promise((resolve, reject) => {
+                                orders.forEach(async (order, index) => {
+                                    // Append shop location to each order
+                                    shopLoc = await db.ShopLocation.findOne({
+                                        where: { productId: order.product.id },
+                                        raw: false
+                                    });
+                                    // console.log("Found order's shop: ", shopLoc.dataValues);
+                                    if (shopLoc)    orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
+                                    else            orders[index].dataValues['shopLocation'] = null;
+                                    if (index === orders.length -1) resolve();
+                                })
+                            });
+                            
+                            addShopsLoop.then(() => {
+                                // console.log('All shops added!');
+                                resolve();
+                            });
+                        }
+                        else{
+                            resolve();
+                        }
+                    })
+                }
+                
 
+                let returnData = () => {
+                    // console.log('Final orders:\n', orders)
+                    // console.log('--> returning data')
+                    resolve(orders);
+                }
+                
+                fetchData()
+                .then (()=> addShop())
+                .then (()=>returnData())
+                // await addShop();
+                // returnData();
             }
-            resolve(orders)
         } catch (e) {
             reject(e)
         }

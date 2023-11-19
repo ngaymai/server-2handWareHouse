@@ -82,10 +82,10 @@ let handleCreateOrder = async (req, res) => {
 }
 
 let handleGetOrders = async (req, res) => {
-    let id = req.query.id; // all, id
-    console.log('Req order id:', id);
+    let uid = req.query.uid; // all, id
+    console.log('Getting order for user:', uid);
 
-    if (!id) {
+    if (!uid) {
         return res.status(500).json({
             errCode: 1,
             errMessage: 'Missing parameter value',
@@ -93,7 +93,7 @@ let handleGetOrders = async (req, res) => {
         })
     }
 
-    let orders = await itemService.getAllOrders(id);
+    let orders = await itemService.getAllOrders(uid);
 
     return res.status(200).json({
         errCode: 0,
