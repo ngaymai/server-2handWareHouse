@@ -384,25 +384,9 @@ let getAllOrders = (uId) => {
             let orders = null;
             if (uId === 'all') {
                 console.log('DB fetching all orders');
-                orders = await db.Order.findAll({
-                    include: [
-                        {model:db.User, as: 'shipper'}, 
-                        {model:db.Product, as: 'product'},
-                        {model:db.ReceivingPlace, as: 'receivingPlace'}
-                    ],
-                    raw: false,
-                    nest: true
-                })
-                console.log("end test")
-                resolve(orders)
-
-            } else if (uId) {
-                console.log('DB fetching orders for a user');
-                let shopLoc = null;
                 
                 let fetchData = async () => {
                     orders = await db.Order.findAll({
-                        where: { userId: uId },
                         include: [
                             {model:db.User, as: 'shipper'}, 
                             {model:db.Product, as: 'product'},
@@ -417,6 +401,7 @@ let getAllOrders = (uId) => {
                 let addShop = () => {
                     return new Promise(async (resolve, reject) => {
                         if (orders.length != 0){
+                            let shopLoc = null;
                             var addShopsLoop = new Promise((resolve, reject) => {
                                 orders.forEach(async (order, index) => {
                                     // Append shop location to each order
@@ -452,8 +437,63 @@ let getAllOrders = (uId) => {
                 fetchData()
                 .then (()=> addShop())
                 .then (()=>returnData())
-                // await addShop();
-                // returnData();
+
+            } else if (uId) {
+                console.log('DB fetching orders for a user');
+                
+                let fetchData = async () => {
+                    orders = await db.Order.findAll({
+                        where: { userId: uId },
+                        include: [
+                            {model:db.User, as: 'shipper'}, 
+                            {model:db.Product, as: 'product'},
+                            {model:db.ReceivingPlace, as: 'receivingPlace'}
+                        ],
+                        raw: false,
+                        nest: true
+                    });
+                    // console.log('--> fetched orders')
+                }
+                
+                let addShop = () => {
+                    return new Promise(async (resolve, reject) => {
+                        if (orders.length != 0){
+                            let shopLoc = null;
+                            var addShopsLoop = new Promise((resolve, reject) => {
+                                orders.forEach(async (order, index) => {
+                                    // Append shop location to each order
+                                    shopLoc = await db.ShopLocation.findOne({
+                                        where: { productId: order.product.id },
+                                        raw: false
+                                    });
+                                    // console.log("Found order's shop: ", shopLoc.dataValues);
+                                    if (shopLoc)    orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
+                                    else            orders[index].dataValues['shopLocation'] = null;
+                                    if (index === orders.length -1) resolve();
+                                })
+                            });
+                            
+                            addShopsLoop.then(() => {
+                                // console.log('All shops added!');
+                                resolve();
+                            });
+                        }
+                        else{
+                            resolve();
+                        }
+                    })
+                }
+                
+
+                let returnData = () => {
+                    // console.log('Final orders:\n', orders)
+                    // console.log('--> returning data')
+                    resolve(orders);
+                }
+                
+                fetchData()
+                .then (()=> addShop())
+                .then (()=>returnData())
             }
         } catch (e) {
             reject(e)
