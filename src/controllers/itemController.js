@@ -19,27 +19,6 @@ let handleGetItems = async (req, res) => {
         items
     })
 }
-let handleGetOrders = async (req, res) => {
-    let id = req.query.id; // all, id
-    console.log('Req order id:', id);
-
-    if (!id) {
-        return res.status(500).json({
-            errCode: 1,
-            errMessage: 'Missing parameter value',
-            orders: []
-        })
-    }
-
-    let orders = await itemService.getAllOrders(id);
-
-    return res.status(200).json({
-        errCode: 0,
-        errMessage: 'OK',
-        orders
-    })
-}
-
 
 let handleAddItem = async (req, res) => {
     let data = req.body; // all, id
@@ -85,10 +64,49 @@ let handleDeleteItem = async (req, res) => {
 
     return res.status(200).json(message);
 }
+
+
+let handleCreateOrder = async (req, res) => {
+    let data = req.body; // all, id
+
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+        })
+    }
+
+    let message = await itemService.createNewOrder(data);
+
+    return res.status(200).json(message);
+}
+
+let handleGetOrders = async (req, res) => {
+    let id = req.query.id; // all, id
+    console.log('Req order id:', id);
+
+    if (!id) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+            orders: []
+        })
+    }
+
+    let orders = await itemService.getAllOrders(id);
+
+    return res.status(200).json({
+        errCode: 0,
+        errMessage: 'OK',
+        orders
+    })
+}
+
 module.exports = {
     handleGetItems: handleGetItems,
-    handleGetOrders: handleGetOrders,
     handleAddItem: handleAddItem,
     handleUpdateItem: handleUpdateItem,
-    handleDeleteItem: handleDeleteItem
+    handleDeleteItem: handleDeleteItem,
+    handleCreateOrder: handleCreateOrder,
+    handleGetOrders: handleGetOrders
 }

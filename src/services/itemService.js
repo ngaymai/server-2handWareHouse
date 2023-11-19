@@ -72,37 +72,6 @@ let getItems = (iID) => {
     })
 }
 
-
-let getAllOrders = (orderId) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let orders = '';
-            if (orderId === 'all') {
-                console.log('DB fetching all orders');
-                orders = await db.Order.findAll({
-                    include: [db.User, db.Product],
-                    raw: false,
-                    nest: true
-                })
-                console.log("end test")
-
-            } else if (orderId) {
-                console.log('DB fetching specific order');
-                orders = await db.Order.findOne({
-                    where: { id: orderId },
-                    include: [db.User, db.Product],
-                    raw: false,
-                    nest: true
-                })
-
-            }
-            resolve(orders)
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
-
 let createNewItem = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -277,10 +246,101 @@ let deleteItemById = (productId) => {
     })
 }
 
+
+///////////////////////////////////////////    ORDER    ///////////////////////////////////////////////////////////////////
+let createReceivePlace = (data, id) => {
+    console.log('create order receive place')
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.ReceivingPlace.create({
+                country: data.country,
+                province: data.province,
+                city: data.city,
+                address: data.address,
+                orderId: id,
+            })
+            console.log('sucessfully added delivery location');
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let createNewOrder = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let order = await db.Order.create({
+                userProposedPrice: data.proposedPrice,
+                purQuantity: data.quantity,
+                purShippingFee:data.shippingFee,
+                status:'waiting',
+                userId: data.buyerId,
+                productId: data.productId
+            })
+            console.log("Inserted Order: ",order)
+
+            if (data.receivePlace) {
+                console.log('Got receive place: ',data.receivePlace)
+                let insertReicevePlace = async (data, id) => await createReceivePlace(data, id);
+
+                insertReicevePlace(data.receivePlace, order.id);
+            }
+
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getAllOrders = (orderId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let orders = '';
+            if (orderId === 'all') {
+                console.log('DB fetching all orders');
+                orders = await db.Order.findAll({
+                    include: [
+                        {model:db.User, as: 'shipper'}, 
+                        {model:db.Product, as: 'product'}
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                console.log("end test")
+
+            } else if (orderId) {
+                console.log('DB fetching specific order');
+                orders = await db.Order.findOne({
+                    where: { id: orderId },
+                    include: [
+                        {model:db.User, as: 'shipper'}, 
+                        {model:db.Product, as: 'product'}
+                    ],
+                    raw: false,
+                    nest: true
+                })
+
+            }
+            resolve(orders)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     getItems: getItems,
-    getAllOrders: getAllOrders,
     createNewItem: createNewItem,
     updateItemData: updateItemData,
-    deleteItemById: deleteItemById
+    deleteItemById: deleteItemById,
+    createNewOrder: createNewOrder,
+    getAllOrders: getAllOrders
 }

@@ -21,10 +21,11 @@ let initWebRoutes = (app) => {
     router.put('/api/edit-user', userController.handleEditUser);
     router.post('/api/add-new-user', userController.handleRegister);
     router.get('/api/get-item', itemController.handleGetItems);
-    router.get('/api/get-order', itemController.handleGetOrders);
     router.post('/api/add-new-item', itemController.handleAddItem);
     router.put('/api/update-item', itemController.handleUpdateItem);
-    router.delete('/api/delete-item', itemController.handleDeleteItem)
+    router.delete('/api/delete-item', itemController.handleDeleteItem);
+    router.post('/api/create-order', itemController.handleCreateOrder);
+    router.get('/api/get-order', itemController.handleGetOrders);
     return app.use("/", router);
 }
 
