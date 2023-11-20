@@ -27,6 +27,9 @@ let initWebRoutes = (app) => {
     router.post('/api/create-order', itemController.handleCreateOrder);
     router.get('/api/get-orders', itemController.handleGetOrders);
     router.get('/api/get-sell-orders', itemController.handleGetSellOrders);
+    router.put('/api/update-order', itemController.handleUpdateOrder);
+    router.post('/api/create-payment', itemController.handleCreatePayment);
+    router.put('/api/get-payment', itemController.handleGetPayment);
     return app.use("/", router);
 }
 

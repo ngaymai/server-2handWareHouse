@@ -196,12 +196,13 @@ let updateItemData = (data) => {
                 product.prodPhone = data.productPhone;
                 if (data.location) {
                     console.log("update location")
+
                     let location = await db.ShopLocation.update(
                         {
-                            country: data.country,
-                            province: data.province,
-                            city: data.city,
-                            address: data.address
+                            country: data.location.country,
+                            province: data.location.province,
+                            city: data.location.city,
+                            address: data.location.address
                         },
                         {
                             where: {
@@ -532,6 +533,189 @@ let getSellOrders = (uid) => {
     })
 }
 
+let updateOrder = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let order = await db.Order.update(
+                {
+                    shipperId: data.shipperId,
+                },
+                {
+                    where: {
+                        id: data.id,
+                    },
+                }
+            )
+
+            if (order) {
+                if (data.receivePlace) {
+                    console.log(data.receivePlace)
+                    await db.ReceivingPlace.update(
+                        {
+                            country: data.receivePlace.country,
+                            province: data.receivePlace.province,
+                            city: data.receivePlace.city,
+                            address: data.receivePlace.address,
+
+                        },
+                        {
+                            where: {
+                                orderId: data.id,
+                            }
+                        }
+                    )
+                }
+
+                resolve({
+                    errCode: 0,
+                    errMessage: `Update success`
+                });
+            } else {
+                resolve({
+                    errCode: 2,
+                    errMessage: `Product isn't exist. `
+                });
+            }
+
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let createPayment = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let payment = await db.Payment.create({
+                payAmount: data.amount,
+                payMethod: data.method,
+                transactionId: data.transactionId,
+                orderId: data.orderId,
+                senderId: data.senderId,
+                receiverId: data.receiverId,
+
+            })
+
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getPayment = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let payment = ''
+            if (data.senderId) {
+                payment = await db.Payment.findAll({
+                    where: {
+                        senderId: data.senderId
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'sender'
+                        },
+                        {
+                            model: db.User,
+                            as: 'receiver'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'order'
+                        },
+
+                    ],
+                    raw: false,
+                    nest: true
+                })
+            } else if (data.receiverId) {
+                payment = await db.Payment.findAll({
+                    where: {
+                        receiverId: data.receiverId
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'sender'
+                        },
+                        {
+                            model: db.User,
+                            as: 'receiver'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'order'
+                        },
+
+                    ],
+                    raw: false,
+                    nest: true
+                })
+            } else if (data.transactionId) {
+                payment = await db.Payment.findAll({
+                    where: {
+                        transactionId: data.transactionId
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'sender'
+                        },
+                        {
+                            model: db.User,
+                            as: 'receiver'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'order'
+                        },
+                        
+                    ],
+                    raw: false,
+                    nest: true
+                })
+            } else if (data.orderId) {
+                payment = await db.Payment.findOne({
+                    where: {
+                        orderId: data.orderId
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'sender'
+                        },
+                        {
+                            model: db.User,
+                            as: 'receiver'
+                        },
+                        {
+                            model: db.Order,
+                            as: 'order'
+                        },
+                        
+                    ],
+                    raw: false,
+                    nest: true
+                })
+            }
+
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                payment: payment
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     getItems: getItems,
     createNewItem: createNewItem,
@@ -539,5 +723,8 @@ module.exports = {
     deleteItemById: deleteItemById,
     createNewOrder: createNewOrder,
     getAllOrders: getAllOrders,
-    getSellOrders: getSellOrders
+    getSellOrders: getSellOrders,
+    updateOrder: updateOrder,
+    createPayment: createPayment,
+    getPayment: getPayment,
 }

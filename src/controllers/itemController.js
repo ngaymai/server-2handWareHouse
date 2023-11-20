@@ -52,7 +52,7 @@ let handleUpdateItem = async (req, res) => {
 
 let handleDeleteItem = async (req, res) => {
     let id = req.body.id; // all, id
-    
+
     if (!id) {
         return res.status(500).json({
             errCode: 1,
@@ -123,6 +123,51 @@ let handleGetSellOrders = async (req, res) => {
     })
 }
 
+let handleUpdateOrder = async (req, res) => {
+    let data = req.body
+
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+        })
+    }
+
+    let message = await itemService.updateOrder(data);
+
+    return res.status(200).json(message);
+
+}
+
+let handleCreatePayment = async (req, res) => {
+    let data = req.body
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+        })
+    }
+
+    let message = await itemService.createPayment(data);
+
+    return res.status(200).json(message);
+}
+
+let handleGetPayment = async (req, res) => {
+    let data = req.body
+    if (!data) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+        })
+    }
+
+    let message = await itemService.getPayment(data);
+
+    return res.status(200).json(message);
+}
+
+
 module.exports = {
     handleGetItems: handleGetItems,
     handleAddItem: handleAddItem,
@@ -130,5 +175,8 @@ module.exports = {
     handleDeleteItem: handleDeleteItem,
     handleCreateOrder: handleCreateOrder,
     handleGetOrders: handleGetOrders,
-    handleGetSellOrders: handleGetSellOrders
+    handleGetSellOrders: handleGetSellOrders,
+    handleUpdateOrder: handleUpdateOrder,
+    handleCreatePayment: handleCreatePayment,
+    handleGetPayment: handleGetPayment
 }
