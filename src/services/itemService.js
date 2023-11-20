@@ -394,7 +394,13 @@ let getAllOrders = (uId) => {
                         include: [
                             { model: db.User, as: 'shipper' },
                             { model: db.User, as: 'buyer' },
-                            { model: db.Product, as: 'product' },
+                            {
+                                model: db.Product, as: 'product',
+                                include: [{
+                                    model: db.ShopLocation,
+                                    as: 'location'
+                                }]
+                            },
                             { model: db.ReceivingPlace, as: 'receivingPlace' }
                         ],
                         raw: false,
@@ -403,34 +409,34 @@ let getAllOrders = (uId) => {
                     // console.log('--> fetched orders')
                 }
 
-                let addShop = () => {
-                    return new Promise(async (resolve, reject) => {
-                        if (orders.length != 0) {
-                            let shopLoc = null;
-                            var addShopsLoop = new Promise((resolve, reject) => {
-                                orders.forEach(async (order, index) => {
-                                    // Append shop location to each order
-                                    shopLoc = await db.ShopLocation.findOne({
-                                        where: { productId: order.product.id },
-                                        raw: false
-                                    });
-                                    // console.log("Found order's shop: ", shopLoc.dataValues);
-                                    if (shopLoc) orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
-                                    else orders[index].dataValues['shopLocation'] = null;
-                                    if (index === orders.length - 1) resolve();
-                                })
-                            });
+                // let addShop = () => {
+                //     return new Promise(async (resolve, reject) => {
+                //         if (orders.length != 0) {
+                //             let shopLoc = null;
+                //             var addShopsLoop = new Promise((resolve, reject) => {
+                //                 orders.forEach(async (order, index) => {
+                //                     // Append shop location to each order
+                //                     shopLoc = await db.ShopLocation.findOne({
+                //                         where: { productId: order.product.id },
+                //                         raw: false
+                //                     });
+                //                     // console.log("Found order's shop: ", shopLoc.dataValues);
+                //                     if (shopLoc) orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
+                //                     else orders[index].dataValues['shopLocation'] = null;
+                //                     if (index === orders.length - 1) resolve();
+                //                 })
+                //             });
 
-                            addShopsLoop.then(() => {
-                                // console.log('All shops added!');
-                                resolve();
-                            });
-                        }
-                        else {
-                            resolve();
-                        }
-                    })
-                }
+                //             addShopsLoop.then(() => {
+                //                 // console.log('All shops added!');
+                //                 resolve();
+                //             });
+                //         }
+                //         else {
+                //             resolve();
+                //         }
+                //     })
+                // }
 
 
                 let returnData = () => {
@@ -440,18 +446,25 @@ let getAllOrders = (uId) => {
                 }
 
                 fetchData()
-                    .then(() => addShop())
+                    //.then(() => addShop())
                     .then(() => returnData())
             }
             else if (uId) {
                 console.log('DB fetching orders for a user');
 
                 let fetchData = async () => {
-                    orders = await db.Order.findAll({
-                        where: { userId: uId },
+                    orders = await db.Order.findOne({
+                        where: { id: uId },
                         include: [
                             { model: db.User, as: 'shipper' },
-                            { model: db.Product, as: 'product' },
+                            { model: db.User, as: 'buyer' },
+                            {
+                                model: db.Product, as: 'product',
+                                include: [{
+                                    model: db.ShopLocation,
+                                    as: 'location'
+                                }]
+                            },
                             { model: db.ReceivingPlace, as: 'receivingPlace' }
                         ],
                         raw: false,
@@ -460,34 +473,34 @@ let getAllOrders = (uId) => {
                     // console.log('--> fetched orders')
                 }
 
-                let addShop = () => {
-                    return new Promise(async (resolve, reject) => {
-                        if (orders.length != 0) {
-                            let shopLoc = null;
-                            var addShopsLoop = new Promise((resolve, reject) => {
-                                orders.forEach(async (order, index) => {
-                                    // Append shop location to each order
-                                    shopLoc = await db.ShopLocation.findOne({
-                                        where: { productId: order.product.id },
-                                        raw: false
-                                    });
-                                    // console.log("Found order's shop: ", shopLoc.dataValues);
-                                    if (shopLoc) orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
-                                    else orders[index].dataValues['shopLocation'] = null;
-                                    if (index === orders.length - 1) resolve();
-                                })
-                            });
+                // let addShop = () => {
+                //     return new Promise(async (resolve, reject) => {
+                //         if (orders.length != 0) {
+                //             let shopLoc = null;
+                //             var addShopsLoop = new Promise((resolve, reject) => {
+                //                 orders.forEach(async (order, index) => {
+                //                     // Append shop location to each order
+                //                     shopLoc = await db.ShopLocation.findOne({
+                //                         where: { productId: order.product.id },
+                //                         raw: false
+                //                     });
+                //                     // console.log("Found order's shop: ", shopLoc.dataValues);
+                //                     if (shopLoc) orders[index].dataValues['shopLocation'] = shopLoc.dataValues;
+                //                     else orders[index].dataValues['shopLocation'] = null;
+                //                     if (index === orders.length - 1) resolve();
+                //                 })
+                //             });
 
-                            addShopsLoop.then(() => {
-                                // console.log('All shops added!');
-                                resolve();
-                            });
-                        }
-                        else {
-                            resolve();
-                        }
-                    })
-                }
+                //             addShopsLoop.then(() => {
+                //                 // console.log('All shops added!');
+                //                 resolve();
+                //             });
+                //         }
+                //         else {
+                //             resolve();
+                //         }
+                //     })
+                // }
 
 
                 let returnData = () => {
@@ -497,7 +510,7 @@ let getAllOrders = (uId) => {
                 }
 
                 fetchData()
-                    .then(() => addShop())
+                    // .then(() => addShop())
                     .then(() => returnData())
             }
         } catch (e) {
@@ -509,23 +522,45 @@ let getAllOrders = (uId) => {
 let getSellOrders = (uid) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let allOrders = await getAllOrders('all');
-            let ret = [];
-            if (allOrders.length > 0) {
-                var filterOrdersLoop = new Promise((resolve, reject) => {
-                    allOrders.forEach(async (order, index) => {
-                        if (uid === order.dataValues.product.userId.toString()) {
-                            ret.push(order);
-                        }
+            // let allOrders = await getAllOrders('all');
+            // let ret = [];
+            // if (allOrders.length > 0) {
+            //     var filterOrdersLoop = new Promise((resolve, reject) => {
+            //         allOrders.forEach(async (order, index) => {
+            //             if (uid === order.dataValues.product.userId.toString()) {
+            //                 ret.push(order);
+            //             }
 
-                        if (index === allOrders.length - 1) resolve();
-                    })
-                });
+            //             if (index === allOrders.length - 1) resolve();
+            //         })
+            //     });
 
-                filterOrdersLoop.then(() => {
-                    resolve(ret);
-                });
-            }
+            //     filterOrdersLoop.then(() => {
+            //         resolve(ret);
+            //     });
+            // }
+
+            let orders = await db.Order.findAll({
+                where: {
+                    userId: uid
+                },
+                include: [
+                    { model: db.User, as: 'shipper' },
+                    { model: db.User, as: 'buyer' },
+                    {
+                        model: db.Product, as: 'product',
+                        include: [{
+                            model: db.ShopLocation,
+                            as: 'location'
+                        }]
+                    },
+                    { model: db.ReceivingPlace, as: 'receivingPlace' }
+                ],
+                raw: false,
+                nest: true
+            })
+
+            resolve(orders)
 
         } catch (e) {
             reject(e)
@@ -539,6 +574,7 @@ let updateOrder = (data) => {
             let order = await db.Order.update(
                 {
                     shipperId: data.shipperId,
+                    status: data.status
                 },
                 {
                     where: {
@@ -675,7 +711,7 @@ let getPayment = (data) => {
                             model: db.Order,
                             as: 'order'
                         },
-                        
+
                     ],
                     raw: false,
                     nest: true
@@ -698,7 +734,7 @@ let getPayment = (data) => {
                             model: db.Order,
                             as: 'order'
                         },
-                        
+
                     ],
                     raw: false,
                     nest: true
