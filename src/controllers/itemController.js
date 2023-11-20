@@ -110,16 +110,16 @@ let handleGetSellOrders = async (req, res) => {
         return res.status(500).json({
             errCode: 1,
             errMessage: 'Missing parameter value',
-            orders: []
+            seller: []
         })
     }
 
-    let orders = await itemService.getSellOrders(uid);
+    let seller = await itemService.getSellOrders(uid);
 
     return res.status(200).json({
         errCode: 0,
         errMessage: 'OK',
-        orders
+        seller
     })
 }
 

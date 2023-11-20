@@ -540,21 +540,28 @@ let getSellOrders = (uid) => {
             //     });
             // }
 
-            let orders = await db.Order.findAll({
+            let orders = await db.User.findOne({
                 where: {
-                    userId: uid
+                    id: uid
                 },
                 include: [
-                    { model: db.User, as: 'shipper' },
-                    { model: db.User, as: 'buyer' },
                     {
-                        model: db.Product, as: 'product',
-                        include: [{
-                            model: db.ShopLocation,
-                            as: 'location'
-                        }]
+                        model: db.Product, as: 'products',
+                        include: [
+                            {
+                                model: db.Order, as: 'orders',
+                                include: [
+                                    { model: db.User, as: 'shipper' },
+                                    { model: db.User, as: 'buyer' },
+                                    { model: db.ReceivingPlace, as: 'receivingPlace' }
+                                ]
+                            },
+                            {
+                                model: db.ShopLocation, as: 'location'
+                            }
+                        ]
                     },
-                    { model: db.ReceivingPlace, as: 'receivingPlace' }
+
                 ],
                 raw: false,
                 nest: true
@@ -567,6 +574,8 @@ let getSellOrders = (uid) => {
         }
     })
 }
+
+
 
 let updateOrder = (data) => {
     return new Promise(async (resolve, reject) => {
