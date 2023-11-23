@@ -383,11 +383,11 @@ let createNewOrder = (data) => {
     })
 }
 
-let getAllOrders = (uId) => {
+let getAllOrders = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let orders = null;
-            if (uId === 'all') {
+            if (id === 'all') {
                 console.log('DB fetching all orders');
 
                 let fetchData = async () => {
@@ -450,12 +450,12 @@ let getAllOrders = (uId) => {
                     //.then(() => addShop())
                     .then(() => returnData())
             }
-            else if (uId) {
-                console.log('DB fetching orders for a user');
+            else if (id) {
+                console.log('DB fetching specific order ids');
 
                 let fetchData = async () => {
                     orders = await db.Order.findOne({
-                        where: { id: uId },
+                        where: { id: id },
                         include: [
                             { model: db.User, as: 'shipper' },
                             { model: db.User, as: 'buyer' },

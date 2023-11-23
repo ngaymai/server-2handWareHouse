@@ -39,19 +39,19 @@ let handleGetAllUsers = async (req, res) => {
 }
 
 let handleCreateNewUser = async (req, res) => {
-    let data = req.body; // all, id
+    // let data = req.body; // all, id
 
-    if (!data) {
-        return res.status(500).json({
-            errCode: 1,
-            errMessage: 'Missing parameter value',
-            users: []
-        })
-    }
+    // if (!data) {
+    //     return res.status(500).json({
+    //         errCode: 1,
+    //         errMessage: 'Missing parameter value',
+    //         users: []
+    //     })
+    // }
 
-    let message = await userService.createNewUser(data);
+    // let message = await userService.createNewUser(data);
 
-    return res.status(200).json(message);
+    // return res.status(200).json(message);
 }
 
 let handleDeleteUser = async (req, res) => {
