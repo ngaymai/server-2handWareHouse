@@ -103,8 +103,8 @@ let handleGetOrders = async (req, res) => {
 }
 
 let handleGetSellOrders = async (req, res) => {
-    let uid = req.query.uid; // all, id
-    console.log('Getting order for seller:', uid);
+    let uid = req.query.id; // all, id
+    // console.log('Getting order for seller:', uid);
 
     if (!uid) {
         return res.status(500).json({
