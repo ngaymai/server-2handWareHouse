@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Product.belongsTo(models.User, {
-        as: 'user',
+        foreignKey: 'sellerId',
+        as: 'seller',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
       })
@@ -44,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'id',
         foreignKey: 'productId',
         as: 'orders',
-        onDelete: 'SET NULL',        
+        onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       })
     }

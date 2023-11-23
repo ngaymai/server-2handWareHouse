@@ -19,11 +19,15 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      status: {
+      shipMethod: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      userId: {
+      status: {
+        type: Sequelize.STRING,
+        // allowNull: false,
+      },
+      buyerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

@@ -10,7 +10,7 @@ let getItems = (iID) => {
                     include: [
                         {
                             model: db.User,
-                            as: 'user'
+                            as: 'seller'
                         },
                         {
                             model: db.Image,
@@ -41,7 +41,7 @@ let getItems = (iID) => {
                     include: [
                         {
                             model: db.User,
-                            as: 'user'
+                            as: 'seller'
                         },
                         {
                             model: db.Image,
@@ -81,8 +81,8 @@ let createNewItem = (data) => {
                 prodQuantity: data.productQuantity,
                 prodDesc: data.productDescription,
                 prodAskPrice: data.productAskPrice,
-                prodPhone: data.productPhone,
-                userId: data.userId,
+                prodPhone: data.productPhone,                
+                sellerId: data.sellerId,
 
             })
             // console.log(product)
@@ -359,7 +359,8 @@ let createNewOrder = (data) => {
                 purQuantity: data.quantity,
                 purShippingFee: data.shippingFee,
                 status: 'waiting',
-                userId: data.buyerId,
+                shipMethod: data.shipMethod,
+                buyerId: data.buyerId,
                 shipperId: data.shipperId,
                 productId: data.productId
             })

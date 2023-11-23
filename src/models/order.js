@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Order.belongsTo(models.User, {
-        foreignKey: 'userId',
+        foreignKey: 'buyerId',
         as: 'buyer',
         // onDelete: 'CASCADE',
         // onUpdate: 'CASCADE',
@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
     purQuantity: DataTypes.INTEGER,
     purShippingFee: DataTypes.DECIMAL(10, 2),
     status: DataTypes.STRING,
-
+    shipMethod: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Order',
