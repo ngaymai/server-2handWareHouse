@@ -24,7 +24,7 @@ let handleUserLogin = (email, password) => {
             let isExist = await checkUserEmail(email)
             if (isExist) {
                 let user = await db.User.findOne({
-                    attributes: ['email', 'roleId', 'password'],
+                    attributes: ['id', 'email', 'firstName', 'lastName', 'roleId', 'password', 'phoneNumber'],
                     where: { email: email },
                     raw: true,
                 })
@@ -163,35 +163,35 @@ let checkUserEmail = (userEmail) => {
 }
 
 let createNewUser = async (data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let check = await checkUserEmail(data.email)
-            if (check) {
-                resolve({
-                    errCode: 1,
-                    errMessage: 'Email already exist.'
-                })
-            }
-            let hashPasswordFromBcrypt = await hashUserPassword(data.password);
-            await db.User.create({
-                email: data.email,
-                password: hashPasswordFromBcrypt,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                address: data.address,
-                phoneNumber: data.phoneNumber,
-                gender: data.gender === '1' ? true : false,
-                roleId: data.roleId
-            }
-            )
-            resolve({
-                errCode: 0,
-                errMessage: 'OK'
-            })
-        } catch (e) {
-            reject(e);
-        }
-    })
+    // return new Promise(async (resolve, reject) => {
+    //     try {
+    //         let check = await checkUserEmail(data.email)
+    //         if (check) {
+    //             resolve({
+    //                 errCode: 1,
+    //                 errMessage: 'Email already exist.'
+    //             })
+    //         }
+    //         let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+    //         await db.User.create({
+    //             email: data.email,
+    //             password: hashPasswordFromBcrypt,
+    //             firstName: data.firstName,
+    //             lastName: data.lastName,
+    //             address: data.address,
+    //             phoneNumber: data.phoneNumber,
+    //             gender: data.gender === '1' ? true : false,
+    //             roleId: data.roleId
+    //         }
+    //         )
+    //         resolve({
+    //             errCode: 0,
+    //             errMessage: 'OK'
+    //         })
+    //     } catch (e) {
+    //         reject(e);
+    //     }
+    // })
 }
 
 let insertUserData = (data) => {
