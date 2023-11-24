@@ -123,6 +123,27 @@ let handleGetSellOrders = async (req, res) => {
     })
 }
 
+let handleGetBuyOrders = async (req, res) => {
+    let id = req.query.id; // all, id
+    // console.log('Getting order for seller:', uid);
+
+    if (!id) {
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Missing parameter value',
+            seller: []
+        })
+    }
+
+    let buyer = await itemService.getBuyOrders(id);
+
+    return res.status(200).json({
+        errCode: 0,
+        errMessage: 'OK',
+        buyer
+    })
+}
+
 let handleUpdateOrder = async (req, res) => {
     let data = req.body
 
@@ -178,5 +199,6 @@ module.exports = {
     handleGetSellOrders: handleGetSellOrders,
     handleUpdateOrder: handleUpdateOrder,
     handleCreatePayment: handleCreatePayment,
-    handleGetPayment: handleGetPayment
+    handleGetPayment: handleGetPayment,
+    handleGetBuyOrders: handleGetBuyOrders,
 }

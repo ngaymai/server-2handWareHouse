@@ -81,7 +81,7 @@ let createNewItem = (data) => {
                 prodQuantity: data.productQuantity,
                 prodDesc: data.productDescription,
                 prodAskPrice: data.productAskPrice,
-                prodPhone: data.productPhone,                
+                prodPhone: data.productPhone,
                 sellerId: data.sellerId,
 
             })
@@ -523,24 +523,6 @@ let getAllOrders = (id) => {
 let getSellOrders = (uid) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // let allOrders = await getAllOrders('all');
-            // let ret = [];
-            // if (allOrders.length > 0) {
-            //     var filterOrdersLoop = new Promise((resolve, reject) => {
-            //         allOrders.forEach(async (order, index) => {
-            //             if (uid === order.dataValues.product.userId.toString()) {
-            //                 ret.push(order);
-            //             }
-
-            //             if (index === allOrders.length - 1) resolve();
-            //         })
-            //     });
-
-            //     filterOrdersLoop.then(() => {
-            //         resolve(ret);
-            //     });
-            // }
-
             let orders = await db.User.findOne({
                 where: {
                     id: uid
@@ -576,6 +558,42 @@ let getSellOrders = (uid) => {
     })
 }
 
+
+let getBuyOrders = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let orders = await db.User.findOne({
+                where: {
+                    id: id
+                },
+                include: [
+
+                    {
+                        model: db.Order, as: 'orders',
+                        include: [
+                            { model: db.User, as: 'shipper' },
+                            {
+                                model: db.Product, as: 'product',
+                                include: [{
+                                    model: db.ShopLocation,
+                                    as: 'location'
+                                }]
+                            },
+                            { model: db.ReceivingPlace, as: 'receivingPlace' }]
+                    },
+
+                ],
+                raw: false,
+                nest: true
+            })
+
+            resolve(orders)
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 
 let updateOrder = (data) => {
@@ -773,4 +791,5 @@ module.exports = {
     updateOrder: updateOrder,
     createPayment: createPayment,
     getPayment: getPayment,
+    getBuyOrders: getBuyOrders,
 }

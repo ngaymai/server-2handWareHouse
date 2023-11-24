@@ -30,6 +30,7 @@ let initWebRoutes = (app) => {
     router.put('/api/update-order', itemController.handleUpdateOrder);
     router.post('/api/create-payment', itemController.handleCreatePayment);
     router.put('/api/get-payment', itemController.handleGetPayment);
+    router.get('/api/get-buy-orders', itemController.handleGetBuyOrders)
     return app.use("/", router);
 }
 
