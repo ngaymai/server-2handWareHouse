@@ -62,7 +62,7 @@ let handleUserLogin = (email, password) => {
 
 
 
-let getAllUsers = (userId) => {
+let getAllUsers = (userId) => {    
     return new Promise(async (resolve, reject) => {
         try {
             let users = '';
@@ -102,7 +102,7 @@ let getAllUsers = (userId) => {
                 // console.log(users)
 
             } else if (userId) {
-                let users = await db.User.findOne({
+                users = await db.User.findOne({
                     // attributes: ['email', 'roleId', 'password'],
                     attributes: {
                         exclude: ['password'],
